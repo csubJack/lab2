@@ -255,13 +255,11 @@ void physics()
     // Collision detection
 	if (g.pos[0] >= (g.xres-g.w)) {
 		g.pos[0] = (g.xres-g.w);
-        // speeds up block
-		g.dir = -g.dir-5;
+		g.dir = -g.dir;
 	}
 	if (g.pos[0] <= g.w) {
 		g.pos[0] = g.w;
-        //slows block
-		g.dir = -g.dir + 3;
+		g.dir = -g.dir;
 	}
 }
 
@@ -272,7 +270,7 @@ void render()
 	glClear(GL_COLOR_BUFFER_BIT);
 	//draw the box
 	glPushMatrix();
-	glColor3ub(250,120, 20);
+	glColor3ub(250,120, 200);
 	glTranslatef(g.pos[0], g.pos[1], 0.0f);
 	glBegin(GL_QUADS);
 		glVertex2f(-g.w, -g.w);
