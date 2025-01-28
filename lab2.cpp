@@ -30,6 +30,9 @@ public:
     float w;
     float dir;
     float pos[2];
+// refactor
+    int red;
+    int blue;
 Global()
 {
 	xres = 400;
@@ -38,6 +41,11 @@ Global()
     dir = 30.0f;
     pos[0] = 0.0f+w;
     pos[1] = yres/2.0f;
+
+    // refactor
+    red = 200;
+    blue =100;
+	
 }
 } g;
 
@@ -171,6 +179,8 @@ void X11_wrapper::check_resize(XEvent *e)
 	if (xce.width != g.xres || xce.height != g.yres) {
 		//Window size did change.
 		reshape_window(xce.width, xce.height);
+		
+
 	}
 }
 //-----------------------------------------------------------------------------
@@ -227,6 +237,18 @@ int X11_wrapper::check_keys(XEvent *e)
 			case XK_Escape:
 				//Escape key was pressed
 				return 1;
+			case XK_b: 
+				// halve the speed of the box
+				g.pos[0] += 15.0f;
+				break;
+		}
+	}
+
+	if (e-> type == KeyRelease){
+		switch (key){
+			case XK_b: 
+			    g.pos[0] += g.dir;
+			    break;
 		}
 	}
 	return 0;
@@ -256,11 +278,34 @@ void physics()
 	if (g.pos[0] >= (g.xres-g.w)) {
 		g.pos[0] = (g.xres-g.w);
 		g.dir = -g.dir;
+		if (g.red < 250){
+		
+		g.red +=10;
+		}
+
+		if (g.blue > 6){
+		g.blue -=5;
+		}
 	}
 	if (g.pos[0] <= g.w) {
 		g.pos[0] = g.w;
 		g.dir = -g.dir;
-	}
+		if (g.red < 250){
+			g.red += 10;
+		}
+		
+		if(g.blue > 6){
+			g.blue -= 5;
+		}
+		}
+
+
+		if (g.red > 5){
+			g.red -= 1; 
+		}
+		if (g.blue < 250){
+			g.blue +=1;
+		}
 }
 
 void render()
@@ -269,16 +314,20 @@ void render()
 	//clear the window
 	glClear(GL_COLOR_BUFFER_BIT);
 	//draw the box
+	// ensures box is smaller than window
+	if (g.w +g.w < g.xres) {
 	glPushMatrix();
-	glColor3ub(250,120, 200);
+	glColor3ub(g.red,0, g.blue);
 	glTranslatef(g.pos[0], g.pos[1], 0.0f);
 	glBegin(GL_QUADS);
 		glVertex2f(-g.w, -g.w);
 		glVertex2f(-g.w,  g.w);
 		glVertex2f( g.w,  g.w);
 		glVertex2f( g.w, -g.w);
+	
 	glEnd();
 	glPopMatrix();
+	}
 }
 
 
